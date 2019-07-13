@@ -10,7 +10,7 @@ namespace LPsolve1.Models
     {
         public string  Title { get; set; }
         public ulong Base { get; set; }
-        public ulong Current { get; set; }
+        public ulong CurrentBedehi { get; set; }
         public List<Cheq> Container { get; set; }
     }
 }

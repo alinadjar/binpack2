@@ -33,9 +33,9 @@ namespace LPsolve1.BinPacking.BestFit
 
             foreach (var bin in Bins)
             {
-                Console.WriteLine( bin.Title +"  ----------------------------- "+ "Base = "+ bin.Base + "  current = " + bin.Current);
+                Console.WriteLine( bin.Title +"  ----------------------------- "+ "Base = "+ bin.Base + "  current = " + bin.CurrentBedehi);
                 foreach (var i in bin.Container)
-                    Console.WriteLine("         ||| ID Cheq: "+ i.ID +" Left: "+i.Value + " form : "+ i.Base);
+                    Console.WriteLine("         ||| ID Cheq: "+ i.ID +" Left: "+i.ValueCurrent + " form : "+ i.ValueBase);
             }
 
         }
@@ -44,14 +44,14 @@ namespace LPsolve1.BinPacking.BestFit
 
         private static void Run_BestFit()
         {
-            Bins = Bins.OrderBy(r => r.Current).ToList();
+            Bins = Bins.OrderBy(r => r.CurrentBedehi).ToList();
             //Bins = Bins.OrderByDescending(r => r.Current).ToList();
-            List<Cheq> sortedCheqs = Cheqs.OrderByDescending(x => x.Value).ToList();
+            List<Cheq> sortedCheqs = Cheqs.OrderByDescending(x => x.ValueBase).ToList();
 
             foreach (var cheq in sortedCheqs)
             {
                 bool assignFlag = false;
-                foreach (var bin in Bins.OrderBy(x => x.Current).Where(p => p.Title != "Holding"))
+                foreach (var bin in Bins.OrderBy(x => x.CurrentBedehi).Where(p => p.Title != "Holding"))
                     if (Assign(cheq, bin) == true)
                     {
                         assignFlag = true;
@@ -66,9 +66,9 @@ namespace LPsolve1.BinPacking.BestFit
 
         private static bool Assign(Cheq chq, Bin bin)
         {
-            if (chq.Value <= bin.Current)
+            if (chq.ValueCurrent <= bin.CurrentBedehi)
             {
-                bin.Current -= chq.Value;
+                bin.CurrentBedehi -= chq.ValueCurrent;
                 bin.Container.Add(chq);
 
                 return true;
@@ -83,19 +83,19 @@ namespace LPsolve1.BinPacking.BestFit
             {
                 Bin binHolding = Bins.Where(p => p.Title == "Holding").Single();
 
-                binHolding.Base += cheq.Value;
-                binHolding.Current += cheq.Value;
+                binHolding.Base += cheq.ValueCurrent;
+                binHolding.CurrentBedehi += cheq.ValueCurrent;
 
-                foreach (var bin in Bins.Where(p => p.Title != "Holding").OrderByDescending(n => n.Current))
+                foreach (var bin in Bins.Where(p => p.Title != "Holding").OrderByDescending(n => n.CurrentBedehi))
                 {
 
-                    if (bin.Current == 0)
+                    if (bin.CurrentBedehi == 0)
                         continue;
-                    else if (bin.Current <= cheq.Value)
+                    else if (bin.CurrentBedehi <= cheq.ValueCurrent)
                     {
-                        cheq.Value -= bin.Current;
-                        binHolding.Current -= bin.Current;
-                        bin.Current = 0;
+                        cheq.ValueCurrent -= bin.CurrentBedehi;
+                        binHolding.CurrentBedehi -= bin.CurrentBedehi;
+                        bin.CurrentBedehi = 0;
                     }
                 }
 
@@ -138,14 +138,14 @@ namespace LPsolve1.BinPacking.BestFit
                     {
                         Title = Markaz,
                         Base = Bedehi,
-                        Current = Bedehi,
+                        CurrentBedehi = Bedehi,
                         Container = new List<Cheq>()
                     });
                 }
 
                 if (ChqNumber != null)
                 {
-                    Cheqs.Add(new Cheq { ID = ChqNumber, Value = ChqValue, Base = ChqValue });
+                    Cheqs.Add(new Cheq { ID = ChqNumber, ValueCurrent = ChqValue, ValueBase = ChqValue });
                 }
 
 
@@ -177,7 +177,7 @@ namespace LPsolve1.BinPacking.BestFit
                 {
                     if(coefs[i] == '1')
                     {
-                        sum += Cheqs[i].Value;
+                        sum += Cheqs[i].ValueCurrent;
                     }
                     
                 }// end inner-for
@@ -186,7 +186,7 @@ namespace LPsolve1.BinPacking.BestFit
             }// end outer-for
 
 
-            ulong sizeMaxBin = Bins.Where(m => m.Title != "Holding").Max(l => l.Current);
+            ulong sizeMaxBin = Bins.Where(m => m.Title != "Holding").Max(l => l.CurrentBedehi);
             //dic.Where(e => e.Value <= sizeMaxBin).OrderByDescending(a => a.Value).ToList()
 
         }
