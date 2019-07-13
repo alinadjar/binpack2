@@ -38,7 +38,7 @@ namespace LPsolve1
             //-------------------------------------------
 
 
-            //BinPack.BestFit();
+            BinPack.BestFit();
             //-------------------------------------------
 
 
@@ -54,10 +54,14 @@ namespace LPsolve1
 
 
 
-            Approximation_SubsetSum.Approximate();
+            //Approximation_SubsetSum.Approximate();
 
             //Permute.Permutation01("00000000000000000000".ToArray(), 0, 20);
             //Read.readColumns();
+
+
+
+            //Write.Write_2_Excel();
 
 
             Console.ReadKey();            

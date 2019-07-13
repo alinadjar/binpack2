@@ -38,6 +38,8 @@ namespace LPsolve1.BinPacking.BestFit
                     Console.WriteLine("         ||| ID Cheq: "+ i.ID +" Left: "+i.ValueCurrent + " form : "+ i.ValueBase);
             }
 
+            Write.Log_2_Excel(Bins);
+
         }
 
 
@@ -46,12 +48,12 @@ namespace LPsolve1.BinPacking.BestFit
         {
             Bins = Bins.OrderBy(r => r.CurrentBedehi).ToList();
             //Bins = Bins.OrderByDescending(r => r.Current).ToList();
-            List<Cheq> sortedCheqs = Cheqs.OrderByDescending(x => x.ValueBase).ToList();
+            List<Cheq> sortedCheqs = Cheqs.OrderBy(x => x.ValueBase).ToList();
 
             foreach (var cheq in sortedCheqs)
             {
                 bool assignFlag = false;
-                foreach (var bin in Bins.OrderBy(x => x.CurrentBedehi).Where(p => p.Title != "Holding"))
+                foreach (var bin in Bins.Where(p => p.Title != "Holding").OrderBy(x => x.CurrentBedehi))
                     if (Assign(cheq, bin) == true)
                     {
                         assignFlag = true;
@@ -69,6 +71,7 @@ namespace LPsolve1.BinPacking.BestFit
             if (chq.ValueCurrent <= bin.CurrentBedehi)
             {
                 bin.CurrentBedehi -= chq.ValueCurrent;
+                chq.ValueCurrent = 0;
                 bin.Container.Add(chq);
 
                 return true;

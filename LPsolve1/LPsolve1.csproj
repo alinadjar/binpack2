@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Excel\Write.cs" />
     <Compile Include="Models\Bin.cs" />
     <Compile Include="BinPacking\BestFit\BinPack.cs" />
     <Compile Include="Models\Cheq.cs" />
