@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LPsolve1.SubsetSum;
+using LPsolve1.Randomized;
 
 namespace LPsolve1
 {
@@ -38,7 +39,7 @@ namespace LPsolve1
             //-------------------------------------------
 
 
-            BinPack.BestFit();
+            //BinPack.BestFit();
             //-------------------------------------------
 
 
@@ -52,9 +53,13 @@ namespace LPsolve1
             //    Console.WriteLine("No subset with given sum");
             //-------------------------------------------
 
-
+            long sample = long.MaxValue;
 
             //Approximation_SubsetSum.Approximate();
+
+
+
+            Randomized_SubsetSum.Approximate_Randomize();
 
             //Permute.Permutation01("00000000000000000000".ToArray(), 0, 20);
             //Read.readColumns();
@@ -65,7 +70,7 @@ namespace LPsolve1
 
 
 
-            
+
 
             Console.ReadKey();            
         }

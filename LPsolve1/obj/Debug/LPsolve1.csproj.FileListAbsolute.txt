@@ -7,11 +7,11 @@ C:\Users\Ali_Nadjar\Documents\Visual Studio 2017\Projects\LPsolve1\LPsolve1\obj\
 C:\Users\Ali_Nadjar\Documents\Visual Studio 2017\Projects\LPsolve1\LPsolve1\obj\Debug\LPsolve1.exe
 C:\Users\Ali_Nadjar\Documents\Visual Studio 2017\Projects\LPsolve1\LPsolve1\obj\Debug\LPsolve1.pdb
 C:\Users\Ali_Nadjar\Documents\Visual Studio 2017\Projects\LPsolve1\LPsolve1\obj\Debug\LPsolve1.csprojAssemblyReference.cache
+C:\Users\Ali\Desktop\LPsolve1\LPsolve1\LPsolve1\obj\Debug\LPsolve1.csproj.CoreCompileInputs.cache
 C:\Users\Ali\Desktop\LPsolve1\LPsolve1\LPsolve1\bin\Debug\LPsolve1.exe.config
 C:\Users\Ali\Desktop\LPsolve1\LPsolve1\LPsolve1\bin\Debug\LPsolve1.exe
 C:\Users\Ali\Desktop\LPsolve1\LPsolve1\LPsolve1\bin\Debug\LPsolve1.pdb
 C:\Users\Ali\Desktop\LPsolve1\LPsolve1\LPsolve1\bin\Debug\LpSolveDotNet.dll
-C:\Users\Ali\Desktop\LPsolve1\LPsolve1\LPsolve1\obj\Debug\LPsolve1.csproj.CoreCompileInputs.cache
 C:\Users\Ali\Desktop\LPsolve1\LPsolve1\LPsolve1\obj\Debug\LPsolve1.csproj.CopyComplete
 C:\Users\Ali\Desktop\LPsolve1\LPsolve1\LPsolve1\obj\Debug\LPsolve1.exe
 C:\Users\Ali\Desktop\LPsolve1\LPsolve1\LPsolve1\obj\Debug\LPsolve1.pdb

@@ -9,8 +9,8 @@ namespace LPsolve1.Models
     public class Bin
     {
         public string  Title { get; set; }
-        public ulong Base { get; set; }
-        public ulong CurrentBedehi { get; set; }
+        public long Base { get; set; }
+        public long CurrentBedehi { get; set; }
         public List<Cheq> Container { get; set; }
     }
 }

@@ -8,7 +8,7 @@ namespace LPsolve1.SubsetSum
 {
     public class subsetModel
     {
-        public ulong sum { get; set; }
+        public long sum { get; set; }
         public HashSet<string> CheqIDs { get; set; }
     }
 }

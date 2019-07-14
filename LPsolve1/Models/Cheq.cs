@@ -9,7 +9,7 @@ namespace LPsolve1.Models
     public class Cheq
     {
         public string ID { get; set; }
-        public ulong ValueCurrent { get; set; }
-        public ulong ValueBase { get; set; }
+        public long ValueCurrent { get; set; }
+        public long ValueBase { get; set; }
     }
 }

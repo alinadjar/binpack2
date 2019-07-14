@@ -129,9 +129,9 @@ namespace LPsolve1.BinPacking.BestFit
             {
 
                 string Markaz = String.IsNullOrEmpty(row.ItemArray[0].ToString()) ? null : row.ItemArray[0].ToString();
-                ulong Bedehi = String.IsNullOrEmpty(row.ItemArray[1].ToString()) ? 0 : Convert.ToUInt64(row.ItemArray[1]);
+                long Bedehi = String.IsNullOrEmpty(row.ItemArray[1].ToString()) ? 0 : Convert.ToInt64(row.ItemArray[1]);
                 string ChqNumber = String.IsNullOrEmpty(row.ItemArray[2].ToString()) ? null : row.ItemArray[2].ToString();
-                ulong ChqValue = String.IsNullOrEmpty(row.ItemArray[3].ToString()) ? 0 : Convert.ToUInt64(row.ItemArray[3]);
+                long ChqValue = String.IsNullOrEmpty(row.ItemArray[3].ToString()) ? 0 : Convert.ToInt64(row.ItemArray[3]);
 
 
 
@@ -167,7 +167,7 @@ namespace LPsolve1.BinPacking.BestFit
             Permute.Permutation01(sb.ToString().ToArray(), 0, Cheqs.Count);
 
             List<string> permutation = Permute.perms;
-            Dictionary<string, ulong> dic = new Dictionary<string, ulong>();
+            Dictionary<string, long> dic = new Dictionary<string, long>();
 
             foreach(string permStr in permutation)
             {
@@ -175,7 +175,7 @@ namespace LPsolve1.BinPacking.BestFit
                     continue;
                 // e,g: s = 01001100001
                 char[] coefs = permStr.ToArray();
-                ulong sum = 0;
+                long sum = 0;
                 for(int i = 0; i != coefs.Length; i++)
                 {
                     if(coefs[i] == '1')
@@ -189,7 +189,7 @@ namespace LPsolve1.BinPacking.BestFit
             }// end outer-for
 
 
-            ulong sizeMaxBin = Bins.Where(m => m.Title != "Holding").Max(l => l.CurrentBedehi);
+            long sizeMaxBin = Bins.Where(m => m.Title != "Holding").Max(l => l.CurrentBedehi);
             //dic.Where(e => e.Value <= sizeMaxBin).OrderByDescending(a => a.Value).ToList()
 
         }

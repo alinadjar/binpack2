@@ -1,5 +1,6 @@
 ﻿using LPsolve1.Excel;
 using LPsolve1.Models;
+using LPsolve1.SubsetSum;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -7,21 +8,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LPsolve1.SubsetSum
+namespace LPsolve1.Randomized
 {
-    class Approximation_SubsetSum
+    public class Randomized_SubsetSum
     {
 
         public static List<Cheq> Cheqs = null;
         public static List<Bin> Bins = null;
 
         public static List<Cheq> CheqsBK = null;
-        
 
 
-        public static void Approximate()
+        public static int COUNTER = 100;
+
+
+        public static void Approximate_Randomize()
         {
-
             try
             {
                 Prepare_Before_Run();
@@ -72,13 +74,13 @@ namespace LPsolve1.SubsetSum
                     Holding.Base += rCHQ.ValueCurrent;
                 }
 
-                foreach( Cheq cheq in Holding.Container.OrderBy(x => x.ValueCurrent))
+                foreach (Cheq cheq in Holding.Container.OrderBy(x => x.ValueCurrent))
                 {
-                    foreach(Bin bin in Bins.Where(t => t.Title != "Holding").OrderBy(y => y.CurrentBedehi))
+                    foreach (Bin bin in Bins.Where(t => t.Title != "Holding").OrderBy(y => y.CurrentBedehi))
                     {
-                        if(bin.CurrentBedehi != 0)
+                        if (bin.CurrentBedehi != 0)
                         {
-                            if(cheq.ValueCurrent <= bin.CurrentBedehi)
+                            if (cheq.ValueCurrent <= bin.CurrentBedehi)
                             {
                                 bin.CurrentBedehi -= cheq.ValueCurrent;
                                 Holding.CurrentBedehi -= cheq.ValueCurrent;
@@ -89,24 +91,24 @@ namespace LPsolve1.SubsetSum
                             {
                                 cheq.ValueCurrent -= bin.CurrentBedehi;
                                 Holding.CurrentBedehi -= bin.CurrentBedehi;
-                                bin.CurrentBedehi = 0;                                
+                                bin.CurrentBedehi = 0;
                             }
                         }
                     }// loop Bins
                 }// loop Cheqs
 
 
-                
+
 
 
                 //}
 
 
                 //-------------------------- Print
-                foreach(Bin bin in Bins)
+                foreach (Bin bin in Bins)
                 {
-                    Console.WriteLine("================== " + bin.Title+" >>> CurrentBedehi = " + bin.CurrentBedehi + " from Base = "+bin.Base);
-                    foreach(Cheq cheq in bin.Container.ToList())
+                    Console.WriteLine("================== " + bin.Title + " >>> CurrentBedehi = " + bin.CurrentBedehi + " from Base = " + bin.Base);
+                    foreach (Cheq cheq in bin.Container.ToList())
                     {
                         Console.WriteLine("         ||| ID Cheq: " + cheq.ID + " Left: " + cheq.ValueCurrent + " form Base: " + cheq.ValueBase);
                     }
@@ -114,105 +116,111 @@ namespace LPsolve1.SubsetSum
                 }
 
 
-                //Write.Log_2_Excel(Bins);
+                Write.Log_2_Excel(Bins);
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
+
         private static subsetModel Calculate_Subset(Bin bin, List<Cheq> cheqs)
         {
-            //List<subsetModel> Union = null;
-            //bool flag_sumExceeded_Bin_Size = false;
-            bool flag_anything_Optimized = true;
-            List<subsetModel> flyingSubset = new List<subsetModel>() { new subsetModel { CheqIDs = new HashSet<string>(), sum = 0 } };
-            //List<KeyValuePair<string, subsetModel>> dic = new List<KeyValuePair<string, subsetModel>>();
+            
+            
+            Random rand = new Random();
 
-            subsetModel result = null, minPert = null;
 
-            foreach (Cheq cheq in cheqs.OrderBy(x => x.ValueBase))
+
+            long minPert = long.MaxValue;
+            List<int> minRndList = null;
+            List<Cheq> filteredList = null;
+            for (int index = 0; index != COUNTER; index++)
             {
-                if (cheq.ValueBase > bin.Base)
-                    break;
-                //if (flag_sumExceeded_Bin_Size == true)
-                //    break;
-                List<subsetModel> Union = new List<subsetModel>();
+                //List<Cheq> filtered = cheqs.OrderBy(c => c.ValueBase).Where(x => x.ValueBase <= bin.Base).ToList();
 
-                //if(result != null)
-                //{
-                //    foreach(var i in Temp.Where(z =>z.sum != 0))
-                //    {
-                //        if (result.CheqIDs.Except(i.CheqIDs).ToList().Count != 0)
-                //        {
-                //            OmittedCheqIDs.AddRange(result.CheqIDs);
-                //            Temp.Remove(i);
-                //        }
-                //    }
-                //}
+                filteredList = Cheqs.filterCumSum(bin.Base);
 
-                if (flag_anything_Optimized == false) // nothing optimized by the previous cheq
+
+
+
+                List<int> rndList = new List<int>();
+                long sum = 0;
+
+                filteredList.ForEach(x => {
+                    int rnd = rand.Next(0, 2);
+                    rndList.Add(rnd);
+                    sum += x.ValueBase * rnd;
+                });
+
+
+                if (sum > bin.Base)
+                    continue;
+                else
                 {
-                    return minPert;
-                }
-
-                foreach (subsetModel i in flyingSubset)
-                {
-                    Union.Add(i);
-                    Union.Add(new subsetModel { CheqIDs = merge(i.CheqIDs, cheq.ID), sum = (cheq.ValueBase + i.sum) });
-                }
-
-                flyingSubset.Clear();
-                flyingSubset = new List<subsetModel>();
-                Union.ForEach(x => flyingSubset.Add(x));
-
-
-
-                result = null;
-                flag_anything_Optimized = false;
-                long min = long.MaxValue;
-                foreach (subsetModel z in Union.OrderBy(x => x.sum).ToList())
-                {
-                    if (z.sum == 0) continue;
-
-                    if (z.sum > bin.Base)
+                    if (sum < minPert)
                     {
-                        //flag_sumExceeded_Bin_Size = true;
-                        break;
+                        minPert = sum;
+                        minRndList = rndList;
                     }
-                    //else if (z.sum <= bin.Base && z.sum > epsilon * z.sum)
-                    else if (z.sum <= bin.Base)
-                    {
-                        if (bin.Base - z.sum < min)
-                        {
-                            min = bin.Base - z.sum;
-                            result = z;
-                        }
-                    }
-                }//
-
-                if (result != null)
-                {
-                    //dic.Add(cheq.ID, result);
-                    //dic.Add(new KeyValuePair<string, subsetModel>(bin.Title, result));
-                    flag_anything_Optimized = true;
-                    minPert = result;
                 }
-            }//
 
-            return minPert;
+            }
+
+
+            subsetModel result = new subsetModel() {  sum = 0, CheqIDs = new HashSet<string>()};
+
+
+            if (minPert == long.MaxValue)
+            {
+                result = Quick_FirstFit(bin, filteredList);
+            }
+            else
+            {
+
+                for(int j = 0; j != minRndList.Count; j++)
+                {
+                    if(minRndList[j] == 1)
+                    {                        
+                        Cheq ch = filteredList[j];
+                        ch.ValueCurrent = 0;
+                        bin.Container.Add(ch);
+                        bin.CurrentBedehi -= ch.ValueBase;
+                        
+
+                        result.sum += ch.ValueBase;
+                        result.CheqIDs.Add(ch.ID);
+                    }
+
+                }
+            }
+
+            return result;
+             
         }
 
-        private static HashSet<string> merge(HashSet<string> cheqIDs, string iD)
+        private static subsetModel Quick_FirstFit(Bin bin, List<Cheq> filteredList)
         {
-            HashSet<string> clone = new HashSet<string>();
-            foreach(var i in cheqIDs)
-                 clone.Add(i);
+            subsetModel result = new subsetModel() { sum = 0, CheqIDs = new HashSet<string>() };
 
-            return clone.Add(iD) == true ? clone : clone;
+            
+
+            foreach(Cheq cheq in filteredList.OrderBy(x => x.ValueBase))
+            {
+                if(result.sum + cheq.ValueBase < bin.Base)
+                {
+                    result.sum += cheq.ValueBase;
+                    result.CheqIDs.Add(cheq.ID);
+
+                    bin.Container.Add(cheq);
+                    bin.CurrentBedehi -= cheq.ValueBase;
+                    cheq.ValueCurrent = 0;
+                }
+            }
+
+            return result;
         }
-
 
 
         /// <summary>
@@ -253,6 +261,8 @@ namespace LPsolve1.SubsetSum
                 }
 
 
+
+                COUNTER = Cheqs.Count / 1;
             }
         }
     }

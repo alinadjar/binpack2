@@ -127,8 +127,8 @@ namespace LPsolve1.Excel
                 //Add table headers going cell by cell.
                 oXL.Cells[1, 1] = "Company";
                 oXL.Cells[1, 2] = "Cheq ID";
-                oXL.Cells[1, 3] = "Left";
-                oXL.Cells[1, 4] = "from";
+                oXL.Cells[1, 3] = "remain";
+                oXL.Cells[1, 4] = "value";
                 oXL.Cells[1, 5] = "Base Bedehi";
                 oXL.Cells[1, 6] = "Current Bedehi";
 
