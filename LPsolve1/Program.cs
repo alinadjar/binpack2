@@ -64,6 +64,9 @@ namespace LPsolve1
             //Write.Write_2_Excel();
 
 
+
+            
+
             Console.ReadKey();            
         }
     }

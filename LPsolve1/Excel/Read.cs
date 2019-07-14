@@ -15,6 +15,7 @@ namespace LPsolve1.Excel
         
         public static void readColumns()
         {
+
             string excelFinalPath = @"C:\Users\Ali_Nadjar\Documents\Visual Studio 2017\Projects\LPsolve1\LPsolve1\Excel\data.xlsx";
             Microsoft.Office.Interop.Excel.Application application = new Microsoft.Office.Interop.Excel.Application();
             Workbook workBook = application.Workbooks.Open(excelFinalPath);
