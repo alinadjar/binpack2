@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LPsolve1.Commons;
 
 namespace LPsolve1.BinPacking.BestFit
 {
@@ -13,14 +14,28 @@ namespace LPsolve1.BinPacking.BestFit
     {
 
         public static List<Cheq> Cheqs = null;
-        public static List<Bin> Bins = null;        
+        public static List<Bin> Bins = null;
+        public static bool Is_TotalBedehi_more_than_sum_Cheq_values = false;
 
 
         public static void BestFit()
         {
+            Cheqs = new List<Cheq>();
+            Bins = new List<Bin>();
 
-            Prepare_Before_Run();
 
+            Is_TotalBedehi_more_than_sum_Cheq_values = ImportData.Prepare_Before_Run(Bins, Cheqs);
+
+            if(Is_TotalBedehi_more_than_sum_Cheq_values)
+            {
+                // order Bedehi by nearest deadlines first 
+                Bins = Bins.OrderBy(x => x.Deadline).ThenBy(r => r.CurrentBedehi).ToList();
+            }
+            else
+            {
+                Bins = Bins.OrderBy(r => r.CurrentBedehi).ToList();
+                //Bins = Bins.OrderByDescending(r => r.Current).ToList();
+            }
 
             //if( Cheqs.Count <= 20)
             //    Run_IdealFit();
@@ -46,8 +61,7 @@ namespace LPsolve1.BinPacking.BestFit
 
         private static void Run_BestFit()
         {
-            Bins = Bins.OrderBy(r => r.CurrentBedehi).ToList();
-            //Bins = Bins.OrderByDescending(r => r.Current).ToList();
+            
             List<Cheq> sortedCheqs = Cheqs.OrderBy(x => x.ValueBase).ToList();
 
             foreach (var cheq in sortedCheqs)
@@ -86,23 +100,31 @@ namespace LPsolve1.BinPacking.BestFit
             {
                 Bin binHolding = Bins.Where(p => p.Title == "Holding").Single();
 
+                binHolding.Container.Add(cheq);
+
                 binHolding.Base += cheq.ValueCurrent;
                 binHolding.CurrentBedehi += cheq.ValueCurrent;
 
-                foreach (var bin in Bins.Where(p => p.Title != "Holding").OrderByDescending(n => n.CurrentBedehi))
+
+                List<Bin> listBins =  Is_TotalBedehi_more_than_sum_Cheq_values == true ? 
+                    Bins.Where(p => p.Title != "Holding").OrderBy(x => x.Deadline).ThenByDescending(n => n.CurrentBedehi).ToList() :                 
+                    Bins.Where(p => p.Title != "Holding").OrderByDescending(n => n.CurrentBedehi).ToList();
+
+                foreach (var bin in listBins)
                 {
 
                     if (bin.CurrentBedehi == 0)
                         continue;
                     else if (bin.CurrentBedehi <= cheq.ValueCurrent)
                     {
+                        bin.offerByHolding.Add(cheq.ID, bin.CurrentBedehi);
                         cheq.ValueCurrent -= bin.CurrentBedehi;
                         binHolding.CurrentBedehi -= bin.CurrentBedehi;
-                        bin.CurrentBedehi = 0;
+                        bin.CurrentBedehi = 0;                        
                     }
                 }
 
-                binHolding.Container.Add(cheq);
+                
 
                 return true;
             }
@@ -114,46 +136,7 @@ namespace LPsolve1.BinPacking.BestFit
         }
 
 
-        /// <summary>
-        /// Read Excel and Store values in in Cheqs and Bins
-        /// </summary>
-        private static void Prepare_Before_Run()
-        {
-            Cheqs = new List<Cheq>();
-            Bins = new List<Bin>();
-
-
-
-            DataSet ds = Read.LoadAllSheets_2_Dataset();
-            foreach (DataRow row in ds.Tables["Table1"].Rows)
-            {
-
-                string Markaz = String.IsNullOrEmpty(row.ItemArray[0].ToString()) ? null : row.ItemArray[0].ToString();
-                long Bedehi = String.IsNullOrEmpty(row.ItemArray[1].ToString()) ? 0 : Convert.ToInt64(row.ItemArray[1]);
-                string ChqNumber = String.IsNullOrEmpty(row.ItemArray[2].ToString()) ? null : row.ItemArray[2].ToString();
-                long ChqValue = String.IsNullOrEmpty(row.ItemArray[3].ToString()) ? 0 : Convert.ToInt64(row.ItemArray[3]);
-
-
-
-                if (Markaz != null)
-                {
-                    Bins.Add(new Bin
-                    {
-                        Title = Markaz,
-                        Base = Bedehi,
-                        CurrentBedehi = Bedehi,
-                        Container = new List<Cheq>()
-                    });
-                }
-
-                if (ChqNumber != null)
-                {
-                    Cheqs.Add(new Cheq { ID = ChqNumber, ValueCurrent = ChqValue, ValueBase = ChqValue });
-                }
-
-
-            }
-        }
+        
 
 
 

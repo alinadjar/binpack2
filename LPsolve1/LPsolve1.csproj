@@ -51,12 +51,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Excel\Write.cs" />
+    <Compile Include="Commons\DateHelper.cs" />
+    <Compile Include="Commons\Excel\Write.cs" />
+    <Compile Include="Commons\ImportData.cs" />
     <Compile Include="Models\Bin.cs" />
     <Compile Include="BinPacking\BestFit\BinPack.cs" />
     <Compile Include="Models\Cheq.cs" />
     <Compile Include="BinPackOPT.cs" />
-    <Compile Include="Excel\Read.cs" />
+    <Compile Include="Commons\Excel\Read.cs" />
     <Compile Include="FormulateSample.cs" />
     <Compile Include="Permute.cs" />
     <Compile Include="Program.cs" />
@@ -69,7 +71,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Excel\data.xlsx" />
+    <None Include="Commons\Excel\data.xlsx" />
+    <None Include="Commons\Excel\newData.xlsx" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

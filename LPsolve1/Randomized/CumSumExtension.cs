@@ -11,12 +11,13 @@ namespace LPsolve1.Randomized
     {
         public static List<Cheq> filterCumSum(this List<Cheq> list, long upto)
         {
+            int k = 2;
             long sum = 0;
             List<Cheq> result = new List<Cheq>();
-            foreach(Cheq cheq in list.OrderBy(x => x.ValueBase).Where(x => x.ValueBase <= 4*upto))
+            foreach(Cheq cheq in list.OrderBy(x => x.ValueBase).Where(x => x.ValueBase <= k*upto))
             {
                 sum += cheq.ValueBase;
-                if (sum < upto)
+                if (sum < k*upto)
                     result.Add(cheq);
                 else break;
             }

@@ -1,4 +1,5 @@
-﻿using LPsolve1.Excel;
+﻿using LPsolve1.Commons;
+using LPsolve1.Excel;
 using LPsolve1.Models;
 using LPsolve1.SubsetSum;
 using System;
@@ -15,6 +16,7 @@ namespace LPsolve1.Randomized
 
         public static List<Cheq> Cheqs = null;
         public static List<Bin> Bins = null;
+        public static bool Is_TotalBedehi_more_than_sum_Cheq_values = false;
 
         public static List<Cheq> CheqsBK = null;
 
@@ -24,18 +26,36 @@ namespace LPsolve1.Randomized
 
         public static void Approximate_Randomize()
         {
+
+            Cheqs = new List<Cheq>();
+            Bins = new List<Bin>();
+
             try
             {
-                Prepare_Before_Run();
+                Is_TotalBedehi_more_than_sum_Cheq_values = ImportData.Prepare_Before_Run(Bins, Cheqs);
+                if (Is_TotalBedehi_more_than_sum_Cheq_values)
+                {
+                    // order Bedehi by nearest deadlines first 
+                    Bins = Bins.OrderBy(x => x.Deadline).ThenBy(r => r.CurrentBedehi).ToList();
+                }
+                else
+                {
+                    Bins = Bins.OrderBy(r => r.CurrentBedehi).ToList();
+                    //Bins = Bins.OrderByDescending(r => r.Current).ToList();
+                }
 
+                COUNTER = Cheqs.Count; // / 1;
+
+                // Let's take a backup of Cheqs
                 CheqsBK = new List<Cheq>();
                 Cheqs.ForEach(x => CheqsBK.Add(x));
 
+
+
                 Dictionary<string, subsetModel> finalresult = new Dictionary<string, subsetModel>();
 
-                //for (double epsilon = 0.9; epsilon >= 0.1; epsilon-=0.1)
-                //{
-                foreach (Bin bin in Bins.Where(x => x.Title != "Holding").OrderBy(x => x.Base))
+
+                foreach (Bin bin in Bins.Where(x => x.Title != "Holding"))
                 {
                     subsetModel output = Calculate_Subset(bin, Cheqs);
                     int tedad = output?.CheqIDs?.Count ?? 0;
@@ -45,7 +65,8 @@ namespace LPsolve1.Randomized
                         finalresult.Add(bin.Title, output);
 
                         List<string> selectedCheqs = output.CheqIDs.ToList();
-                        selectedCheqs.ForEach(v => {
+                        selectedCheqs.ForEach(v =>
+                        {
                             Cheq q = Cheqs.Where(y => y.ID == v).SingleOrDefault();
                             q.ValueCurrent = 0;
                             bin.Container.Add(q);
@@ -58,12 +79,16 @@ namespace LPsolve1.Randomized
 
 
                 // take the remaining Cheqs into a bin named 'Holding', so as to be assigned.
-                List<string> assignedCheqIDs = new List<string>();
-                foreach (HashSet<string> index in finalresult.Values.Select(i => i.CheqIDs))
-                    assignedCheqIDs.AddRange(index.ToList());
+
+                List<Cheq> remaining = Cheqs.ToList();
+
+
+                //List<string> assignedCheqIDs = new List<string>();
+                //foreach (HashSet<string> index in finalresult.Values.Select(i => i.CheqIDs))
+                //    assignedCheqIDs.AddRange(index.ToList());
 
                 //List<Cheq> remaining = (from ch in Cheqs where !assignedCheqIDs.Contains(ch.ID) select ch).ToList();
-                List<Cheq> remaining = Cheqs.ToList();
+
                 //remaining.AddRange((from ch in CheqsBK where ch.Value != 0 select ch).ToList());
 
                 Bin Holding = Bins.Where(m => m.Title == "Holding").Single();
@@ -76,12 +101,16 @@ namespace LPsolve1.Randomized
 
                 foreach (Cheq cheq in Holding.Container.OrderBy(x => x.ValueCurrent))
                 {
-                    foreach (Bin bin in Bins.Where(t => t.Title != "Holding").OrderBy(y => y.CurrentBedehi))
+                    List<Bin> listBins = Is_TotalBedehi_more_than_sum_Cheq_values == true ?
+                        Bins.Where(t => t.Title != "Holding").OrderBy(x => x.Deadline).ThenBy(y => y.CurrentBedehi).ToList() :
+                        Bins.Where(t => t.Title != "Holding").OrderBy(y => y.CurrentBedehi).ToList();
+                    foreach (Bin bin in listBins)
                     {
                         if (bin.CurrentBedehi != 0)
                         {
                             if (cheq.ValueCurrent <= bin.CurrentBedehi)
                             {
+                                bin.offerByHolding.Add(cheq.ID, cheq.ValueCurrent);
                                 bin.CurrentBedehi -= cheq.ValueCurrent;
                                 Holding.CurrentBedehi -= cheq.ValueCurrent;
                                 cheq.ValueCurrent = 0;
@@ -89,6 +118,7 @@ namespace LPsolve1.Randomized
                             }
                             else
                             {
+                                bin.offerByHolding.Add(cheq.ID, bin.CurrentBedehi);
                                 cheq.ValueCurrent -= bin.CurrentBedehi;
                                 Holding.CurrentBedehi -= bin.CurrentBedehi;
                                 bin.CurrentBedehi = 0;
@@ -100,8 +130,6 @@ namespace LPsolve1.Randomized
 
 
 
-
-                //}
 
 
                 //-------------------------- Print
@@ -127,8 +155,8 @@ namespace LPsolve1.Randomized
 
         private static subsetModel Calculate_Subset(Bin bin, List<Cheq> cheqs)
         {
-            
-            
+
+
             Random rand = new Random();
 
 
@@ -136,11 +164,14 @@ namespace LPsolve1.Randomized
             long minPert = long.MaxValue;
             List<int> minRndList = null;
             List<Cheq> filteredList = null;
+            filteredList = Cheqs.filterCumSum(bin.Base);
+
+
             for (int index = 0; index != COUNTER; index++)
             {
                 //List<Cheq> filtered = cheqs.OrderBy(c => c.ValueBase).Where(x => x.ValueBase <= bin.Base).ToList();
 
-                filteredList = Cheqs.filterCumSum(bin.Base);
+
 
 
 
@@ -148,7 +179,8 @@ namespace LPsolve1.Randomized
                 List<int> rndList = new List<int>();
                 long sum = 0;
 
-                filteredList.ForEach(x => {
+                filteredList.ForEach(x =>
+                {
                     int rnd = rand.Next(0, 2);
                     rndList.Add(rnd);
                     sum += x.ValueBase * rnd;
@@ -159,9 +191,9 @@ namespace LPsolve1.Randomized
                     continue;
                 else
                 {
-                    if (sum < minPert)
+                    if ((bin.Base - sum) < minPert)
                     {
-                        minPert = sum;
+                        minPert = bin.Base - sum;
                         minRndList = rndList;
                     }
                 }
@@ -169,7 +201,7 @@ namespace LPsolve1.Randomized
             }
 
 
-            subsetModel result = new subsetModel() {  sum = 0, CheqIDs = new HashSet<string>()};
+            subsetModel result = new subsetModel() { sum = 0, CheqIDs = new HashSet<string>() };
 
 
             if (minPert == long.MaxValue)
@@ -179,15 +211,15 @@ namespace LPsolve1.Randomized
             else
             {
 
-                for(int j = 0; j != minRndList.Count; j++)
+                for (int j = 0; j != minRndList.Count; j++)
                 {
-                    if(minRndList[j] == 1)
-                    {                        
+                    if (minRndList[j] == 1)
+                    {
                         Cheq ch = filteredList[j];
-                        ch.ValueCurrent = 0;
-                        bin.Container.Add(ch);
-                        bin.CurrentBedehi -= ch.ValueBase;
-                        
+                        //ch.ValueCurrent = 0;
+                        //bin.Container.Add(ch);
+                        //bin.CurrentBedehi -= ch.ValueBase;
+
 
                         result.sum += ch.ValueBase;
                         result.CheqIDs.Add(ch.ID);
@@ -197,73 +229,102 @@ namespace LPsolve1.Randomized
             }
 
             return result;
-             
+
         }
 
         private static subsetModel Quick_FirstFit(Bin bin, List<Cheq> filteredList)
         {
+            Console.WriteLine("############################################################################");
             subsetModel result = new subsetModel() { sum = 0, CheqIDs = new HashSet<string>() };
 
-            
 
-            foreach(Cheq cheq in filteredList.OrderBy(x => x.ValueBase))
+
+            //if (filteredList.Count > 10)
+            //{
+            foreach (Cheq cheq in filteredList.OrderByDescending(x => x.ValueBase))
             {
-                if(result.sum + cheq.ValueBase < bin.Base)
+                if (result.sum + cheq.ValueBase < bin.Base)
                 {
                     result.sum += cheq.ValueBase;
                     result.CheqIDs.Add(cheq.ID);
 
-                    bin.Container.Add(cheq);
-                    bin.CurrentBedehi -= cheq.ValueBase;
-                    cheq.ValueCurrent = 0;
+                    //bin.Container.Add(cheq);
+                    //bin.CurrentBedehi -= cheq.ValueBase;
+                    //cheq.ValueCurrent = 0;
                 }
             }
+            //}
+            //else
+            //{
+            //    StringBuilder sb = new StringBuilder();
+            //    filteredList.ForEach(x => sb.Append("0"));
+            //    Randomized_SubsetSum.perms = new List<string>();
+            //    Permutation01(sb.ToString().ToCharArray(), 0, sb.ToString().Length);
+
+            //    foreach(string str in perms)
+            //    {
+
+            //    }
+            //}
+
 
             return result;
         }
 
 
-        /// <summary>
-        /// Read Excel and Store values in in Cheqs and Bins
-        /// </summary>
-        private static void Prepare_Before_Run()
+
+        //public static void General_SubsetSum(int[] set, int n, int sum, List<Cheq> r)
+        //{
+        //    // Returns true if there is a subset of set[] with sum 
+        //    // equal to given sum 
+
+        //    // Base Cases 
+        //    if (sum == 0)
+        //    {
+        //        return true;
+        //    }
+
+        //    if (n == 0 && sum != 0)
+        //        return false;
+
+        //    // If last element is greater than sum,  
+        //    // then ignore it 
+        //    if (set[n - 1] > sum)
+        //        return General_SubsetSum(set, n - 1, sum);
+
+        //    /* else, check if sum can be obtained  
+        //    by any of the following 
+        //    (a) including the last element 
+        //    (b) excluding the last element */
+        //    return General_SubsetSum(set, n - 1, sum) || General_SubsetSum(set, n - 1, sum - set[n - 1]);
+        //}
+
+
+        public static List<string> perms = new List<string>();
+
+        public static void Permutation01(char[] s, int i, int n)
         {
-            Cheqs = new List<Cheq>();
-            Bins = new List<Bin>();
-
-
-
-            DataSet ds = Read.LoadAllSheets_2_Dataset();
-            foreach (DataRow row in ds.Tables["Table1"].Rows)
+            if (i == n)
+            {
+                Console.WriteLine(s);
+                perms.Add(new string(s));
+            }
+            else
             {
 
-                string Markaz = String.IsNullOrEmpty(row.ItemArray[0].ToString()) ? null : row.ItemArray[0].ToString();
-                long Bedehi = String.IsNullOrEmpty(row.ItemArray[1].ToString()) ? 0 : Convert.ToInt64(row.ItemArray[1]);
-                string ChqNumber = String.IsNullOrEmpty(row.ItemArray[2].ToString()) ? null : row.ItemArray[2].ToString();
-                long ChqValue = String.IsNullOrEmpty(row.ItemArray[3].ToString()) ? 0 : Convert.ToInt64(row.ItemArray[3]);
+                Permutation01(s, i + 1, n);
+                swap01(s, i);
+                Permutation01(s, i + 1, n);
+                swap01(s, i);
 
-
-
-                if (Markaz != null)
-                {
-                    Bins.Add(new Bin
-                    {
-                        Title = Markaz,
-                        Base = Bedehi,
-                        CurrentBedehi = Bedehi,
-                        Container = new List<Cheq>()
-                    });
-                }
-
-                if (ChqNumber != null)
-                {
-                    Cheqs.Add(new Cheq { ID = ChqNumber, ValueCurrent = ChqValue, ValueBase = ChqValue });
-                }
-
-
-
-                COUNTER = Cheqs.Count / 1;
             }
         }
+
+        private static void swap01(char[] s, int v1)
+        {
+            s[v1] = s[v1] == '0' ? '1' : '0';
+        }
+
+
     }
 }

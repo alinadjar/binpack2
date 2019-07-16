@@ -53,7 +53,7 @@ namespace LPsolve1
             //    Console.WriteLine("No subset with given sum");
             //-------------------------------------------
 
-            long sample = long.MaxValue;
+            //long sample = long.MaxValue;
 
             //Approximation_SubsetSum.Approximate();
 

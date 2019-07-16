@@ -13,31 +13,31 @@ namespace LPsolve1.Excel
     {
 
         
-        public static void readColumns()
-        {
+        //public static void readColumns()
+        //{
 
-            string excelFinalPath = @"C:\Users\Ali_Nadjar\Documents\Visual Studio 2017\Projects\LPsolve1\LPsolve1\Excel\data.xlsx";
-            Microsoft.Office.Interop.Excel.Application application = new Microsoft.Office.Interop.Excel.Application();
-            Workbook workBook = application.Workbooks.Open(excelFinalPath);
-            /////////////////////////////////////////////////////////////////
+        //    string excelFinalPath = @"C:\Users\Ali_Nadjar\Documents\Visual Studio 2017\Projects\LPsolve1\LPsolve1\Excel\newData.xlsx";
+        //    Microsoft.Office.Interop.Excel.Application application = new Microsoft.Office.Interop.Excel.Application();
+        //    Workbook workBook = application.Workbooks.Open(excelFinalPath);
+        //    /////////////////////////////////////////////////////////////////
 
-            for (int i = 1; i <= workBook.Sheets.Count; i++)
-            {
-                Worksheet worksheet = workBook.Worksheets[i];
-                object cellValue = ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[2, 1]).Value;
-                //listBox1.Items.Add(cellValue);
-                //MessageBox.Show(cellValue.ToString());
-            }
+        //    for (int i = 1; i <= workBook.Sheets.Count; i++)
+        //    {
+        //        Worksheet worksheet = workBook.Worksheets[i];
+        //        object cellValue = ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[2, 1]).Value;
+        //        //listBox1.Items.Add(cellValue);
+        //        //MessageBox.Show(cellValue.ToString());
+        //    }
 
-            /////////////////////////////////////////////////////////////////
-            workBook.Close(false, excelFinalPath, null);
-            Marshal.ReleaseComObject(workBook);
-        }
+        //    /////////////////////////////////////////////////////////////////
+        //    workBook.Close(false, excelFinalPath, null);
+        //    Marshal.ReleaseComObject(workBook);
+        //}
 
 
         public static DataSet LoadAllSheets_2_Dataset()
         {
-            string excelFinalPath = @"C:\Users\Ali\Desktop\LPsolve1\LPsolve1\LPsolve1\Excel\data.xlsx";
+            string excelFinalPath = @"C:\Users\Ali\Desktop\LPsolve1\LPsolve1\LPsolve1\Commons\Excel\newData.xlsx";
             Microsoft.Office.Interop.Excel.Application application = new Microsoft.Office.Interop.Excel.Application();
             Workbook workBook = application.Workbooks.Open(excelFinalPath);
             /////////////////////////////////////////////////////////////////
