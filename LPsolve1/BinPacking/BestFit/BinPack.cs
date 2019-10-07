@@ -26,16 +26,27 @@ namespace LPsolve1.BinPacking.BestFit
 
             Is_TotalBedehi_more_than_sum_Cheq_values = ImportData.Prepare_Before_Run(Bins, Cheqs);
 
-            if(Is_TotalBedehi_more_than_sum_Cheq_values)
+            List<Bin> BinsPrority1 = Bins.Where(z => z.BargeType == 0 && z.Title != "Holding").ToList();
+            List<Bin> BinsPrority2 = Bins.Where(z => z.BargeType != 0 && z.Title != "Holding").ToList();
+            Bin holding = Bins.Where(z => z.Title == "Holding").SingleOrDefault();
+
+
+
+            if (Is_TotalBedehi_more_than_sum_Cheq_values)
             {
                 // order Bedehi by nearest deadlines first 
-                Bins = Bins.OrderBy(x => x.Deadline).ThenBy(r => r.CurrentBedehi).ToList();
+                Bins = BinsPrority1.OrderBy(x => x.Deadline).ThenBy(r => r.CurrentBedehi).ToList();
             }
             else
             {
-                Bins = Bins.OrderBy(r => r.CurrentBedehi).ToList();
+                Bins = BinsPrority1.OrderBy(r => r.CurrentBedehi).ToList();
                 //Bins = Bins.OrderByDescending(r => r.Current).ToList();
             }
+
+            BinsPrority2.ForEach(rec => {
+                Bins.Add(rec);
+            });
+            Bins.Add(holding);
 
             //if( Cheqs.Count <= 20)
             //    Run_IdealFit();
@@ -43,6 +54,9 @@ namespace LPsolve1.BinPacking.BestFit
             Run_BestFit();
 
 
+            
+
+           
 
             //------------------------------print results:
 

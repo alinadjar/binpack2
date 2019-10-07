@@ -28,10 +28,11 @@ namespace LPsolve1.Commons
             {
 
                 string Markaz = String.IsNullOrEmpty(row.ItemArray[0].ToString()) ? null : row.ItemArray[0].ToString();
-                int deadline = String.IsNullOrEmpty(row.ItemArray[4].ToString()) ? 0 : DateHelper.Convert_StndDate_2_Int(row.ItemArray[4].ToString());
                 long Bedehi = String.IsNullOrEmpty(row.ItemArray[1].ToString()) ? 0 : Convert.ToInt64(row.ItemArray[1]);
-                string ChqNumber = String.IsNullOrEmpty(row.ItemArray[2].ToString()) ? null : row.ItemArray[2].ToString();
-                long ChqValue = String.IsNullOrEmpty(row.ItemArray[3].ToString()) ? 0 : Convert.ToInt64(row.ItemArray[3]);
+                int deadline = String.IsNullOrEmpty(row.ItemArray[2].ToString()) ? 0 : DateHelper.Convert_StndDate_2_Int(row.ItemArray[2].ToString());
+                int BargeType = String.IsNullOrEmpty(row.ItemArray[3].ToString()) ? 1 : Convert.ToInt32(row.ItemArray[3]);
+                string ChqNumber = String.IsNullOrEmpty(row.ItemArray[4].ToString()) ? null : row.ItemArray[4].ToString();
+                long ChqValue = String.IsNullOrEmpty(row.ItemArray[5].ToString()) ? 0 : Convert.ToInt64(row.ItemArray[5]);
 
 
                 sumBedehi += (ulong)Bedehi;
@@ -44,6 +45,7 @@ namespace LPsolve1.Commons
                     {
                         Title = Markaz,
                         Deadline = deadline,
+                        BargeType = BargeType,
                         Base = Bedehi,
                         CurrentBedehi = Bedehi,
                         Container = new List<Cheq>(),
