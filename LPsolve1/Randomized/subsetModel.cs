@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LPsolve1.SubsetSum
+namespace LPsolve1.Randomized
 {
     public class subsetModel
     {

@@ -1,7 +1,6 @@
 ﻿using LPsolve1.Commons;
 using LPsolve1.Excel;
 using LPsolve1.Models;
-using LPsolve1.SubsetSum;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -300,30 +299,30 @@ namespace LPsolve1.Randomized
         //}
 
 
-        public static List<string> perms = new List<string>();
+        //public static List<string> perms = new List<string>();
 
-        public static void Permutation01(char[] s, int i, int n)
-        {
-            if (i == n)
-            {
-                Console.WriteLine(s);
-                perms.Add(new string(s));
-            }
-            else
-            {
+        //public static void Permutation01(char[] s, int i, int n)
+        //{
+        //    if (i == n)
+        //    {
+        //        Console.WriteLine(s);
+        //        perms.Add(new string(s));
+        //    }
+        //    else
+        //    {
 
-                Permutation01(s, i + 1, n);
-                swap01(s, i);
-                Permutation01(s, i + 1, n);
-                swap01(s, i);
+        //        Permutation01(s, i + 1, n);
+        //        swap01(s, i);
+        //        Permutation01(s, i + 1, n);
+        //        swap01(s, i);
 
-            }
-        }
+        //    }
+        //}
 
-        private static void swap01(char[] s, int v1)
-        {
-            s[v1] = s[v1] == '0' ? '1' : '0';
-        }
+        //private static void swap01(char[] s, int v1)
+        //{
+        //    s[v1] = s[v1] == '0' ? '1' : '0';
+        //}
 
 
     }

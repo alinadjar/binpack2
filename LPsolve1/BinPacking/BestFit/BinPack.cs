@@ -141,41 +141,7 @@ namespace LPsolve1.BinPacking.BestFit
 
 
 
-        //-------------------------------------------------------
-        private static void Run_IdealFit()
-        {
-            StringBuilder sb = new StringBuilder();
-            for(int i = 0; i != Cheqs.Count; i++)
-                sb.Append("0");
-            Permute.Permutation01(sb.ToString().ToArray(), 0, Cheqs.Count);
 
-            List<string> permutation = Permute.perms;
-            Dictionary<string, long> dic = new Dictionary<string, long>();
-
-            foreach(string permStr in permutation)
-            {
-                if (Convert.ToUInt64(permStr) == 0)
-                    continue;
-                // e,g: s = 01001100001
-                char[] coefs = permStr.ToArray();
-                long sum = 0;
-                for(int i = 0; i != coefs.Length; i++)
-                {
-                    if(coefs[i] == '1')
-                    {
-                        sum += Cheqs[i].ValueCurrent;
-                    }
-                    
-                }// end inner-for
-
-                dic.Add(permStr, sum);
-            }// end outer-for
-
-
-            long sizeMaxBin = Bins.Where(m => m.Title != "Holding").Max(l => l.CurrentBedehi);
-            //dic.Where(e => e.Value <= sizeMaxBin).OrderByDescending(a => a.Value).ToList()
-
-        }
 
 
     }

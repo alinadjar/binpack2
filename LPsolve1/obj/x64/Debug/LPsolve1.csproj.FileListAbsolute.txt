@@ -1,0 +1,9 @@
+C:\Users\Ali\Desktop\LPsolve1\LPsolve1\LPsolve1\obj\x64\Debug\LPsolve1.csproj.CoreCompileInputs.cache
+C:\Users\Ali\Desktop\LPsolve1\LPsolve1\LPsolve1\bin\x64\Debug\LPsolve1.exe.config
+C:\Users\Ali\Desktop\LPsolve1\LPsolve1\LPsolve1\bin\x64\Debug\LPsolve1.exe
+C:\Users\Ali\Desktop\LPsolve1\LPsolve1\LPsolve1\bin\x64\Debug\LPsolve1.pdb
+C:\Users\Ali\Desktop\LPsolve1\LPsolve1\LPsolve1\bin\x64\Debug\LpSolveDotNet.dll
+C:\Users\Ali\Desktop\LPsolve1\LPsolve1\LPsolve1\obj\x64\Debug\LPsolve1.csproj.CopyComplete
+C:\Users\Ali\Desktop\LPsolve1\LPsolve1\LPsolve1\obj\x64\Debug\LPsolve1.exe
+C:\Users\Ali\Desktop\LPsolve1\LPsolve1\LPsolve1\obj\x64\Debug\LPsolve1.pdb
+C:\Users\Ali\Desktop\LPsolve1\LPsolve1\LPsolve1\obj\x64\Debug\LPsolve1.csprojAssemblyReference.cache
