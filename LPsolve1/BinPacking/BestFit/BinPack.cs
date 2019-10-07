@@ -81,7 +81,8 @@ namespace LPsolve1.BinPacking.BestFit
             foreach (var cheq in sortedCheqs)
             {
                 bool assignFlag = false;
-                foreach (var bin in Bins.Where(p => p.Title != "Holding").OrderBy(x => x.CurrentBedehi))
+                //foreach (var bin in Bins.Where(p => p.Title != "Holding").OrderBy(x => x.CurrentBedehi))
+                foreach (var bin in Bins.Where(p => p.Title != "Holding"))
                     if (Assign(cheq, bin) == true)
                     {
                         assignFlag = true;
@@ -120,11 +121,12 @@ namespace LPsolve1.BinPacking.BestFit
                 binHolding.CurrentBedehi += cheq.ValueCurrent;
 
 
-                List<Bin> listBins =  Is_TotalBedehi_more_than_sum_Cheq_values == true ? 
-                    Bins.Where(p => p.Title != "Holding").OrderBy(x => x.Deadline).ThenByDescending(n => n.CurrentBedehi).ToList() :                 
-                    Bins.Where(p => p.Title != "Holding").OrderByDescending(n => n.CurrentBedehi).ToList();
+                //List<Bin> listBins =  Is_TotalBedehi_more_than_sum_Cheq_values == true ? 
+                //    Bins.Where(p => p.Title != "Holding").OrderBy(x => x.Deadline).ThenByDescending(n => n.CurrentBedehi).ToList() :                 
+                //    Bins.Where(p => p.Title != "Holding").OrderByDescending(n => n.CurrentBedehi).ToList();
 
-                foreach (var bin in listBins)
+                //foreach (var bin in listBins)
+                foreach (var bin in Bins)
                 {
 
                     if (bin.CurrentBedehi == 0)
