@@ -9,6 +9,7 @@ namespace LPsolve1.Models
     public class Bin
     {
         public string  Title { get; set; }
+        public string TitleCode { get; set; }
         public int Deadline { get; set; }
         public long Base { get; set; }
         public long CurrentBedehi { get; set; }

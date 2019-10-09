@@ -74,6 +74,7 @@
     <Compile Include="Commons\DateHelper.cs" />
     <Compile Include="Commons\Excel\Write.cs" />
     <Compile Include="Commons\ImportData.cs" />
+    <Compile Include="GroupPacking\GroupPack.cs" />
     <Compile Include="Models\Bin.cs" />
     <Compile Include="BinPacking\BestFit\BinPack.cs" />
     <Compile Include="Models\Cheq.cs" />
