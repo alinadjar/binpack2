@@ -9,7 +9,7 @@ namespace LPsolve1.Models
     public class Bin
     {
         public string  Title { get; set; }
-        public string TitleCode { get; set; }
+        public string CodeMarkaz { get; set; }
         public int Deadline { get; set; }
         public long Base { get; set; }
         public long CurrentBedehi { get; set; }
@@ -17,6 +17,7 @@ namespace LPsolve1.Models
 
         // each entry to this dictionary is a  <CheqID, Mablaq>, which refers to the amount deficit, accomodated by holding
         public Dictionary<string, long> offerByHolding { get; set; }
+        public Dictionary<string, long> cheqDetails { get; set; }
 
         public int BargeType { get; set; }
     }

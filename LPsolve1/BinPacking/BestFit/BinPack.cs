@@ -62,7 +62,7 @@ namespace LPsolve1.BinPacking.BestFit
 
             foreach (var bin in Bins)
             {
-                Console.WriteLine( bin.Title +"  ----------------------------- "+ "Base = "+ bin.Base + "  current = " + bin.CurrentBedehi);
+                Console.WriteLine( bin.CodeMarkaz +":"+bin.Title +"  ----------------------------- "+ "Base = "+ bin.Base + "  current = " + bin.CurrentBedehi);
                 foreach (var i in bin.Container)
                     Console.WriteLine("         ||| ID Cheq: "+ i.ID +" Left: "+i.ValueCurrent + " form : "+ i.ValueBase);
             }

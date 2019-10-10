@@ -27,12 +27,13 @@ namespace LPsolve1.Commons
             foreach (DataRow row in ds.Tables["Table1"].Rows)
             {
 
-                string Markaz = String.IsNullOrEmpty(row.ItemArray[0].ToString()) ? null : row.ItemArray[0].ToString();
-                long Bedehi = String.IsNullOrEmpty(row.ItemArray[1].ToString()) ? 0 : Convert.ToInt64(row.ItemArray[1]);
-                int deadline = String.IsNullOrEmpty(row.ItemArray[2].ToString()) ? 0 : DateHelper.Convert_StndDate_2_Int(row.ItemArray[2].ToString());
-                int BargeType = String.IsNullOrEmpty(row.ItemArray[3].ToString()) ? 1 : Convert.ToInt32(row.ItemArray[3]);
-                string ChqNumber = String.IsNullOrEmpty(row.ItemArray[4].ToString()) ? null : row.ItemArray[4].ToString();
-                long ChqValue = String.IsNullOrEmpty(row.ItemArray[5].ToString()) ? 0 : Convert.ToInt64(row.ItemArray[5]);
+                string CodeMarkaz = String.IsNullOrEmpty(row.ItemArray[0].ToString()) ? null : row.ItemArray[0].ToString();
+                string Markaz = String.IsNullOrEmpty(row.ItemArray[1].ToString()) ? null : row.ItemArray[1].ToString();
+                long Bedehi = String.IsNullOrEmpty(row.ItemArray[2].ToString()) ? 0 : Convert.ToInt64(row.ItemArray[2]);
+                int deadline = String.IsNullOrEmpty(row.ItemArray[3].ToString()) ? 0 : DateHelper.Convert_StndDate_2_Int(row.ItemArray[3].ToString());
+                int BargeType = String.IsNullOrEmpty(row.ItemArray[4].ToString()) ? 1 : Convert.ToInt32(row.ItemArray[4]);
+                string ChqNumber = String.IsNullOrEmpty(row.ItemArray[5].ToString()) ? null : row.ItemArray[5].ToString();
+                long ChqValue = String.IsNullOrEmpty(row.ItemArray[6].ToString()) ? 0 : Convert.ToInt64(row.ItemArray[6]);
 
 
                 sumBedehi += (ulong)Bedehi;
@@ -44,12 +45,14 @@ namespace LPsolve1.Commons
                     Bins.Add(new Bin
                     {
                         Title = Markaz,
+                        CodeMarkaz = CodeMarkaz,
                         Deadline = deadline,
                         BargeType = BargeType,
                         Base = Bedehi,
                         CurrentBedehi = Bedehi,
                         Container = new List<Cheq>(),
-                        offerByHolding = new Dictionary<string, long>()
+                        offerByHolding = new Dictionary<string, long>(),
+                        cheqDetails = new Dictionary<string, long>()
                     });
                 }
 

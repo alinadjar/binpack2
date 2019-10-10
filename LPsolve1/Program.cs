@@ -1,4 +1,5 @@
 using LPsolve1.BinPacking.BestFit;
+using LPsolve1.GroupPacking;
 using LPsolve1.Excel;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,8 @@ namespace LPsolve1
 
 
 
-            BinPack.BestFit();
+            //BinPack.BestFit();
+            GroupPack.GroupFit();
             //-------------------------------------------
 
 

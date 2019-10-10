@@ -102,6 +102,102 @@ namespace LPsolve1.Excel
             return true;
         }
 
+        internal static bool Log_2_Excel_4_GroupPack(List<Bin> bins)
+        {
+            try
+            {
+                Microsoft.Office.Interop.Excel.Application oXL;
+                Microsoft.Office.Interop.Excel._Workbook oWB;
+                Microsoft.Office.Interop.Excel._Worksheet oSheet;
+                //Microsoft.Office.Interop.Excel.Range oRng;
+                object misvalue = System.Reflection.Missing.Value;
+
+
+
+
+
+                //Start Excel and get Application object.
+                oXL = new Microsoft.Office.Interop.Excel.Application();
+
+                oWB = oXL.Workbooks.Add();
+                //oXL.Visible = true;
+                //oXL.Quit();
+
+                //Add table headers going cell by cell.
+                oXL.Cells[1, 1] = "Markaz";
+                oXL.Cells[1, 2] = "Company";
+                oXL.Cells[1, 3] = "Cheq ID";
+                oXL.Cells[1, 4] = "remain";
+                oXL.Cells[1, 5] = "value";
+                oXL.Cells[1, 6] = "Base Bedehi";
+                oXL.Cells[1, 7] = "Current Bedehi";
+
+
+
+                //Get a new workbook.
+                //oWB = (Microsoft.Office.Interop.Excel._Workbook)(oXL.Workbooks);
+                //oSheet = (Microsoft.Office.Interop.Excel._Worksheet)oWB.ActiveSheet;
+                //oSheet.EnableSelection = Microsoft.Office.Interop.Excel.XlEnableSelection.xlNoSelection;
+
+
+
+                int row = 2;
+                foreach (var bin in bins)
+                {
+                    oXL.Cells[row, 1] = bin.CodeMarkaz;
+                    oXL.Cells[row, 2] = bin.Title;                    
+                    oXL.Cells[row, 6] = bin.Base;
+                    oXL.Cells[row, 7] = bin.CurrentBedehi;
+
+                    foreach (var i in bin.cheqDetails)
+                    {
+                        oXL.Cells[row, 3] = i.Key;
+                        oXL.Cells[row, 4] = i.Value;
+                        row++;
+                    }
+
+
+                    //Console.WriteLine(bin.Title + "  ----------------------------- " + "Base = " + bin.Base + "  current = " + bin.CurrentBedehi);
+                    //foreach (var i in bin.Container)
+                    //    Console.WriteLine("         ||| ID Cheq: " + i.ID + " Left: " + i.ValueCurrent + " form : " + i.ValueBase);
+
+                    row++;
+                }
+
+
+
+
+                //oXL.Visible = false;
+                //oXL.UserControl = false;
+                //oWB.SaveAs(@"C:\test.xlsx", Microsoft.Office.Interop.Excel.XlFileFormat.xlWorkbookDefault, Type.Missing, Type.Missing,
+                //    false, false, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlNoChange,
+                //    Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+
+
+                // This works.
+                oWB.SaveAs(@"C:\MappingResult.xls", Microsoft.Office.Interop.Excel.XlFileFormat.xlWorkbookNormal,
+                    System.Reflection.Missing.Value, System.Reflection.Missing.Value, false, false,
+                    Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlShared, false, false, System.Reflection.Missing.Value,
+                    System.Reflection.Missing.Value, System.Reflection.Missing.Value);
+
+                // This does not!?
+                //excelWorkBook.SaveAs("C:\\MyExcelTestTest.xlsx", Excel.XlFileFormat.xlWorkbookNormal,
+                //    System.Reflection.Missing.Value, System.Reflection.Missing.Value, false, false,
+                //    Excel.XlSaveAsAccessMode.xlShared, false, false, System.Reflection.Missing.Value,
+                //    System.Reflection.Missing.Value, System.Reflection.Missing.Value);
+
+                oWB.Close(misvalue, misvalue, misvalue);
+                //oWB.Close();
+                oXL.Quit(); //------------
+
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+            return true;
+        }
 
         public static bool Log_2_Excel(List<Models.Bin> bins)
         {
