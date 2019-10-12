@@ -241,7 +241,7 @@ namespace LPsolve1.Excel
                     oXL.Cells[row, 6] = bin.Base;
                     oXL.Cells[row, 7] = bin.CurrentBedehi;
 
-                    foreach (var i in bin.cheqDetails)
+                    foreach (var i in bin.CheqDetails)
                     {
                         oXL.Cells[row, 3] = i.Key;
                         oXL.Cells[row, 4] = i.Value;

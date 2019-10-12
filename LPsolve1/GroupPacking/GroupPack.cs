@@ -48,7 +48,7 @@ namespace LPsolve1.GroupPacking
             foreach (var bin in Bins)
             {
                 Console.WriteLine(bin.CodeMarkaz + ":" + bin.Title + "  ----------------------------- " + "Base = " + bin.Base + "  current = " + bin.CurrentBedehi);
-                foreach (var i in bin.cheqDetails)
+                foreach (var i in bin.CheqDetails)
                     Console.WriteLine("         ||| ID Cheq: " + i.Key + " Amount Delivered: " + i.Value);
             }
             foreach(Cheq j in Bins.Where(b => b.Title == "Holding").SingleOrDefault().Container)
@@ -70,18 +70,18 @@ namespace LPsolve1.GroupPacking
 
             List<string> list_CodeMarkaz = Bins.Where(b => b.Title != "Holding").Select(i => i.CodeMarkaz).Distinct().ToList();
 
-            Dictionary<string, long> priorutyDic = new Dictionary<string, long>();
+            Dictionary<string, long> priorityDic = new Dictionary<string, long>();
             foreach (string codeMarkaz in list_CodeMarkaz)
-                priorutyDic.Add(codeMarkaz, RemainAvailable(Bins.Where(m => m.CodeMarkaz == codeMarkaz).ToList()));
+                priorityDic.Add(codeMarkaz, RemainAvailable(Bins.Where(m => m.CodeMarkaz == codeMarkaz).ToList()));
 
-            list_CodeMarkaz = priorutyDic.OrderByDescending(d => d.Value).Select(k => k.Key).ToList();
+            list_CodeMarkaz = priorityDic.OrderByDescending(d => d.Value).Select(k => k.Key).ToList();
             list_CodeMarkaz.ForEach(codeMarkaz =>
             {
 
                 if (sortCheqASC)
-                    sortedCheqs = Cheqs.OrderBy(x => x.ValueCurrent).ToList();
+                    sortedCheqs = Cheqs.Where(c => c.ValueCurrent > 0).OrderBy(x => x.ValueCurrent).ToList();
                 else
-                    sortedCheqs = Cheqs.OrderByDescending(x => x.ValueCurrent).ToList();
+                    sortedCheqs = Cheqs.Where(c => c.ValueCurrent > 0).OrderByDescending(x => x.ValueCurrent).ToList();
 
 
                 foreach (Cheq cheq in sortedCheqs)
@@ -108,7 +108,8 @@ namespace LPsolve1.GroupPacking
                             Console.WriteLine("============Cheq " + cheq.ID + " value: " + cheq.ValueCurrent + "==> " + bin.Title + " bin.mande = " + bin.CurrentBedehi);
                             logger.Add(new Logger { CheqID = cheq.ID , currentValue = cheq.ValueCurrent , factor = bin.Title , mandeFactor = bin.CurrentBedehi , Base = cheq.ValueBase});
                             //bin.Container.Add(cheq);
-                            bin.cheqDetails.Add(cheq.ID, cheq.ValueCurrent.ToString());
+                            bin.AddAmountReceivedByCheq(cheq.ID, cheq.ValueCurrent);
+                            //cheqDetails.Add(cheq.ID, cheq.ValueCurrent.ToString());
                             bin.CurrentBedehi = bin.CurrentBedehi - cheq.ValueCurrent;                                                      
                             cheq.ValueCurrent = 0;
                             break;
@@ -119,7 +120,8 @@ namespace LPsolve1.GroupPacking
                             logger.Add(new Logger { CheqID = cheq.ID, currentValue = cheq.ValueCurrent, factor = bin.Title, mandeFactor = bin.CurrentBedehi, Base = cheq.ValueBase });
 
                             //bin.Container.Add(cheq);
-                            bin.cheqDetails.Add(cheq.ID, bin.CurrentBedehi.ToString());
+                            //bin.CheqDetails.Add(cheq.ID, bin.CurrentBedehi);
+                            bin.AddAmountReceivedByCheq(cheq.ID, bin.CurrentBedehi);
                             cheq.ValueCurrent = cheq.ValueCurrent - bin.CurrentBedehi;
                             bin.CurrentBedehi = 0;                            
                         }
