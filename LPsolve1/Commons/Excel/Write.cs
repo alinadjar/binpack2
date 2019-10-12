@@ -1,4 +1,5 @@
-﻿using LPsolve1.Models;
+﻿using LPsolve1.GroupPacking;
+using LPsolve1.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -92,6 +93,97 @@ namespace LPsolve1.Excel
                     Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
 
                 oWB.Close();
+
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        internal static bool Log_2_Excel_logger_GroupPack(List<Logger> logger)
+        {
+            try
+            {
+                Microsoft.Office.Interop.Excel.Application oXL;
+                Microsoft.Office.Interop.Excel._Workbook oWB;
+                Microsoft.Office.Interop.Excel._Worksheet oSheet;
+                //Microsoft.Office.Interop.Excel.Range oRng;
+                object misvalue = System.Reflection.Missing.Value;
+
+
+
+
+
+                //Start Excel and get Application object.
+                oXL = new Microsoft.Office.Interop.Excel.Application();
+
+                oWB = oXL.Workbooks.Add();
+                //oXL.Visible = true;
+                //oXL.Quit();
+
+                //Add table headers going cell by cell.
+                oXL.Cells[1, 1] = "CheqID";
+                oXL.Cells[1, 2] = "مبلغ پایه چک";                
+                oXL.Cells[1, 3] = "باقیمانده چک";
+                oXL.Cells[1, 4] = "فاکتور";
+                oXL.Cells[1, 5] = "مانده فاکتور";
+
+
+
+                //Get a new workbook.
+                //oWB = (Microsoft.Office.Interop.Excel._Workbook)(oXL.Workbooks);
+                //oSheet = (Microsoft.Office.Interop.Excel._Worksheet)oWB.ActiveSheet;
+                //oSheet.EnableSelection = Microsoft.Office.Interop.Excel.XlEnableSelection.xlNoSelection;
+
+
+
+                int row = 2;
+                foreach (var log in logger)
+                {
+                    oXL.Cells[row, 2] = log.Base;
+                    oXL.Cells[row, 1] = log.CheqID;
+                    oXL.Cells[row, 3] = log.currentValue;
+                    oXL.Cells[row, 4] = log.factor;
+                    oXL.Cells[row, 5] = log.mandeFactor;
+
+
+
+
+                    //Console.WriteLine(bin.Title + "  ----------------------------- " + "Base = " + bin.Base + "  current = " + bin.CurrentBedehi);
+                    //foreach (var i in bin.Container)
+                    //    Console.WriteLine("         ||| ID Cheq: " + i.ID + " Left: " + i.ValueCurrent + " form : " + i.ValueBase);
+
+                    row++;
+                }
+
+
+
+
+                //oXL.Visible = false;
+                //oXL.UserControl = false;
+                //oWB.SaveAs(@"C:\test.xlsx", Microsoft.Office.Interop.Excel.XlFileFormat.xlWorkbookDefault, Type.Missing, Type.Missing,
+                //    false, false, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlNoChange,
+                //    Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+
+
+                // This works.
+                oWB.SaveAs(@"C:\MappingResult2.xls", Microsoft.Office.Interop.Excel.XlFileFormat.xlWorkbookNormal,
+                    System.Reflection.Missing.Value, System.Reflection.Missing.Value, false, false,
+                    Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlShared, false, false, System.Reflection.Missing.Value,
+                    System.Reflection.Missing.Value, System.Reflection.Missing.Value);
+
+                // This does not!?
+                //excelWorkBook.SaveAs("C:\\MyExcelTestTest.xlsx", Excel.XlFileFormat.xlWorkbookNormal,
+                //    System.Reflection.Missing.Value, System.Reflection.Missing.Value, false, false,
+                //    Excel.XlSaveAsAccessMode.xlShared, false, false, System.Reflection.Missing.Value,
+                //    System.Reflection.Missing.Value, System.Reflection.Missing.Value);
+
+                oWB.Close(misvalue, misvalue, misvalue);
+                //oWB.Close();
+                oXL.Quit(); //------------
 
             }
             catch (Exception ex)

@@ -52,7 +52,7 @@ namespace LPsolve1.Commons
                         CurrentBedehi = Bedehi,
                         Container = new List<Cheq>(),
                         offerByHolding = new Dictionary<string, long>(),
-                        cheqDetails = new Dictionary<string, long>()
+                        cheqDetails = new Dictionary<string, string>()
                     });
                 }
 

@@ -15,6 +15,9 @@ namespace LPsolve1.GroupPacking
         public static List<Bin> Bins = null;
         public static bool Is_TotalBedehi_more_than_sum_Cheq_values = false;
 
+
+        public static List<Logger> logger = new List<Logger>();
+
         public static void GroupFit()
         {
             Cheqs = new List<Cheq>();
@@ -31,9 +34,11 @@ namespace LPsolve1.GroupPacking
             Bin holding = Bins.Where(b => b.Title == "Holding").SingleOrDefault();
             Cheqs.Where(c => c.ValueCurrent > 0).ToList().ForEach(cheq =>
             {
+                logger.Add(new Logger { CheqID=cheq.ID, Base=cheq.ValueBase, currentValue = cheq.ValueCurrent, factor = "Holding", mandeFactor = -1 });
                 holding.Container.Add(cheq);
                 holding.Base += cheq.ValueCurrent;
                 holding.CurrentBedehi += cheq.ValueCurrent;
+
             });
 
 
@@ -46,8 +51,11 @@ namespace LPsolve1.GroupPacking
                 foreach (var i in bin.cheqDetails)
                     Console.WriteLine("         ||| ID Cheq: " + i.Key + " Amount Delivered: " + i.Value);
             }
+            foreach(Cheq j in Bins.Where(b => b.Title == "Holding").SingleOrDefault().Container)
+                Console.WriteLine("         ||| ID Cheq: " + j.ID + " Base: " + j.ValueBase + " Current:"+ j.ValueCurrent);
 
             Write.Log_2_Excel_4_GroupPack(Bins);
+            Write.Log_2_Excel_logger_GroupPack(logger);
         }
 
 
@@ -58,20 +66,27 @@ namespace LPsolve1.GroupPacking
         private static void Run_GroupFit(bool sortCheqASC)
         {
             List<Cheq> sortedCheqs = null;
+            
 
-            if (sortCheqASC)
-                sortedCheqs = Cheqs.OrderBy(x => x.ValueBase).ToList();
-            else
-                sortedCheqs = Cheqs.OrderByDescending(x => x.ValueBase).ToList();
+            List<string> list_CodeMarkaz = Bins.Where(b => b.Title != "Holding").Select(i => i.CodeMarkaz).Distinct().ToList();
 
+            Dictionary<string, long> priorutyDic = new Dictionary<string, long>();
+            foreach (string codeMarkaz in list_CodeMarkaz)
+                priorutyDic.Add(codeMarkaz, RemainAvailable(Bins.Where(m => m.CodeMarkaz == codeMarkaz).ToList()));
 
-            List<string> list_CodeMarkaz = Bins.Select(i => i.CodeMarkaz).Distinct().ToList();
-
+            list_CodeMarkaz = priorutyDic.OrderByDescending(d => d.Value).Select(k => k.Key).ToList();
             list_CodeMarkaz.ForEach(codeMarkaz =>
             {
+
+                if (sortCheqASC)
+                    sortedCheqs = Cheqs.OrderBy(x => x.ValueCurrent).ToList();
+                else
+                    sortedCheqs = Cheqs.OrderByDescending(x => x.ValueCurrent).ToList();
+
+
                 foreach (Cheq cheq in sortedCheqs)
                 {
-                    if (cheq.ValueCurrent != 0)
+                    if (cheq.ValueCurrent > 0)
                         Assign_To_Markaz(cheq, codeMarkaz);
                 }
             });
@@ -83,27 +98,34 @@ namespace LPsolve1.GroupPacking
             {
                 List<Bin> filteredByMarkaz = Bins.Where(m => m.CodeMarkaz == codeMarkaz).ToList();
 
-                if (cheq.ValueCurrent <= RemainAvailable(filteredByMarkaz))
+                long remainBedehiMarkaz = RemainAvailable(filteredByMarkaz);
+                if (cheq.ValueCurrent <= remainBedehiMarkaz)
                 {
-                    foreach (Bin bin in filteredByMarkaz.OrderBy(x => x.CurrentBedehi))
+                    foreach (Bin bin in filteredByMarkaz.OrderBy(x => x.CurrentBedehi).Where(y => y.CurrentBedehi > 0).ToList())
                     {
-                        if (cheq.ValueCurrent <= bin.CurrentBedehi)
+                        if (cheq.ValueCurrent > 0 && cheq.ValueCurrent <= bin.CurrentBedehi)
                         {
-                            bin.CurrentBedehi -= cheq.ValueCurrent;
-                            bin.Container.Add(cheq);
-                            bin.cheqDetails.Add(cheq.ID, cheq.ValueCurrent);
+                            Console.WriteLine("============Cheq " + cheq.ID + " value: " + cheq.ValueCurrent + "==> " + bin.Title + " bin.mande = " + bin.CurrentBedehi);
+                            logger.Add(new Logger { CheqID = cheq.ID , currentValue = cheq.ValueCurrent , factor = bin.Title , mandeFactor = bin.CurrentBedehi , Base = cheq.ValueBase});
+                            //bin.Container.Add(cheq);
+                            bin.cheqDetails.Add(cheq.ID, cheq.ValueCurrent.ToString());
+                            bin.CurrentBedehi = bin.CurrentBedehi - cheq.ValueCurrent;                                                      
+                            cheq.ValueCurrent = 0;
                             break;
-                        }
-                        else
+                        }                        
+                        else if(cheq.ValueCurrent > 0)
                         {
-                            cheq.ValueCurrent -= bin.CurrentBedehi;
-                            bin.CurrentBedehi = 0;
-                            bin.Container.Add(cheq);
-                            bin.cheqDetails.Add(cheq.ID, bin.CurrentBedehi);
+                            Console.WriteLine("@@#########Cheq "+ cheq.ID+ " value: "+cheq.ValueCurrent +"==> "+bin.Title+ " bin.mande = "+bin.CurrentBedehi);
+                            logger.Add(new Logger { CheqID = cheq.ID, currentValue = cheq.ValueCurrent, factor = bin.Title, mandeFactor = bin.CurrentBedehi, Base = cheq.ValueBase });
+
+                            //bin.Container.Add(cheq);
+                            bin.cheqDetails.Add(cheq.ID, bin.CurrentBedehi.ToString());
+                            cheq.ValueCurrent = cheq.ValueCurrent - bin.CurrentBedehi;
+                            bin.CurrentBedehi = 0;                            
                         }
                     }// end for
 
-                    cheq.ValueCurrent = 0;
+                    //cheq.ValueCurrent = 0;
                     return true;
                 }
                 else
