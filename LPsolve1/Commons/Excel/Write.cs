@@ -88,7 +88,7 @@ namespace LPsolve1.Excel
 
                 oXL.Visible = false;
                 oXL.UserControl = false;
-                oWB.SaveAs(@"C:\test.xlsx", Microsoft.Office.Interop.Excel.XlFileFormat.xlWorkbookDefault, Type.Missing, Type.Missing,
+                oWB.SaveAs(@"C:\test.xls", Microsoft.Office.Interop.Excel.XlFileFormat.xlWorkbookDefault, Type.Missing, Type.Missing,
                     false, false, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlNoChange,
                     Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
 
@@ -170,7 +170,7 @@ namespace LPsolve1.Excel
 
 
                 // This works.
-                oWB.SaveAs(@"C:\MappingResult2.xls", Microsoft.Office.Interop.Excel.XlFileFormat.xlWorkbookNormal,
+                oWB.SaveAs(@"C:\Mapping2.xls", Microsoft.Office.Interop.Excel.XlFileFormat.xlWorkbookNormal,
                     System.Reflection.Missing.Value, System.Reflection.Missing.Value, false, false,
                     Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlShared, false, false, System.Reflection.Missing.Value,
                     System.Reflection.Missing.Value, System.Reflection.Missing.Value);
@@ -267,7 +267,7 @@ namespace LPsolve1.Excel
 
 
                 // This works.
-                oWB.SaveAs(@"C:\MappingResult.xls", Microsoft.Office.Interop.Excel.XlFileFormat.xlWorkbookNormal,
+                oWB.SaveAs("C:\\Mapping.xls", Microsoft.Office.Interop.Excel.XlFileFormat.xlWorkbookNormal,
                     System.Reflection.Missing.Value, System.Reflection.Missing.Value, false, false,
                     Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlShared, false, false, System.Reflection.Missing.Value,
                     System.Reflection.Missing.Value, System.Reflection.Missing.Value);
